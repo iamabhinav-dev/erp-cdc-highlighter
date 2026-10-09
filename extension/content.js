@@ -68,8 +68,51 @@
     return td.textContent.trim();
   }
 
+  /* ── Check if current page/frame is the CDC Noticeboard / Placement portal ── */
+  function isCDCNoticeboard() {
+    const href = window.location.href || '';
+    const title = (document.title || '').toUpperCase();
+
+    // 1. Direct CDC placement URL paths
+    if (/TrainingPlacementSSO\//i.test(href) ||
+        /TrainingPlacement\//i.test(href) ||
+        /TPStudent\.jsp/i.test(href) ||
+        /Notice\.jsp/i.test(href) ||
+        /StudentPlacementStatus\.jsp/i.test(href)) {
+      return true;
+    }
+
+    // 2. Local test / mock files
+    if (/mock_erp_test|mock_table|firefox_frame/i.test(href)) {
+      return true;
+    }
+
+    // 3. Page title check
+    if (title.includes('CAREER DEVELOPMENT CENTRE')) {
+      return true;
+    }
+
+    // 4. In-page markers: jqGrid placement monitoring table
+    if (document.querySelector('table[id*="monitoring"], table[id*="jqmonitoring"], #jqmonitoring37')) {
+      return true;
+    }
+
+    // 5. Look for specific CDC placement headers / breadcrumb text
+    const bodyText = document.body ? (document.body.innerText || document.body.textContent || '') : '';
+    if (
+      (bodyText.includes('Placement/Internship') || bodyText.includes('Registration/Update Profile for Placement')) &&
+      (bodyText.includes('Application Status') || bodyText.includes('Resume Upload End') || bodyText.includes('Preview CV'))
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   /* ── Main: scan all rows and colour them ── */
   function highlightAll() {
+    if (!isCDCNoticeboard()) return;
+
     const now = new Date();
     const urgentMs = (config.urgentHours || 12) * 3600000;
 
@@ -113,6 +156,11 @@
         endCell = lastDateCell;
       }
 
+      /* Guard: Skip any row that is not an actual CDC company row */
+      if (!applyCell && !endCell && !nameCell) {
+        return;
+      }
+
       /* --- Derive state --- */
       const appliedText = cellText(applyCell).toUpperCase();
       const isApplied   = (appliedText === 'Y' || appliedText === 'YES');
@@ -120,7 +168,7 @@
       const isExpired   = endDate ? endDate < now : false;
       const timeLeft    = endDate ? endDate - now : 0;
       const isUrgent    = !isApplied && !isExpired && timeLeft > 0 && timeLeft <= urgentMs;
-      const canApply    = !isApplied && !isExpired;
+      const canApply    = !isApplied && !isExpired && (applyCell !== null || endCell !== null);
 
       /* --- Clear previous classes --- */
       row.classList.remove(
@@ -298,11 +346,11 @@
 
   /* ── Poll for async jqGrid load ── */
   function pollUntilRows() {
+    if (!isCDCNoticeboard()) return;
     let tries = 0;
     const iv = setInterval(() => {
       tries++;
-      if (document.querySelectorAll('tr.jqgrow').length > 0 ||
-          document.querySelectorAll('table tbody tr td').length > 0) {
+      if (document.querySelectorAll('tr.jqgrow, #jqmonitoring37 tr, table[id*="monitoring"] tr').length > 0) {
         highlightAll();
       }
       if (tries >= 30) clearInterval(iv);
@@ -325,6 +373,11 @@
 
   /* ── Boot ── */
   function init() {
+    // Only activate on IIT KGP ERP CDC Noticeboard / Placement portal
+    if (!isCDCNoticeboard()) {
+      return;
+    }
+
     loadConfig(() => {
       highlightAll();
       setupObserver();

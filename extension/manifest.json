@@ -22,16 +22,12 @@
     "activeTab"
   ],
   "host_permissions": [
-    "*://erp.iitkgp.ac.in/*",
-    "*://*.iitkgp.ac.in/*",
-    "<all_urls>"
+    "*://erp.iitkgp.ac.in/*"
   ],
   "content_scripts": [
     {
       "matches": [
-        "*://erp.iitkgp.ac.in/*",
-        "*://*.iitkgp.ac.in/*",
-        "<all_urls>"
+        "*://erp.iitkgp.ac.in/*"
       ],
       "all_frames": true,
       "match_about_blank": true,
