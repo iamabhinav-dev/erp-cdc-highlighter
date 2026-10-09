@@ -33,12 +33,17 @@ A browser extension for **Firefox** and **Brave/Chrome** that automatically colo
 5. *(Optional — for local file testing)* Click **Details → Allow access to file URLs**.
 
 ### Firefox
+
+#### 🦊 Official Firefox Add-on (Recommended)
+Install directly from the store:
+- **Firefox Add-ons Store:** [Install ERP Table Row Highlighter](https://addons.mozilla.org/firefox/addon/erp-table-row-highlighter/)
+- **Developer Hub Versions:** [AMO Version Management](https://addons.mozilla.org/en-US/developers/addon/erp-table-row-highlighter/versions)
+
+#### 🛠 Temporary Developer Mode
 1. Download or clone this repository.
 2. Open `about:debugging#/runtime/this-firefox`.
 3. Click **"Load Temporary Add-on…"**.
-4. Navigate to the `extension/` folder and select **`manifest.json`**.
-
-> **Note:** Firefox temporary add-ons are removed when the browser closes. For a permanent install you need to sign the extension via [Mozilla Add-on Hub](https://extensionworkshop.com/).
+4. Navigate to the `extension/` folder and select **`manifest.json`** (or select `erp-row-highlighter-1.0.4.xpi`).
 
 ---
 
