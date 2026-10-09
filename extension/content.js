@@ -211,14 +211,23 @@
       makeDraggable(bar, bar.querySelector('#erp-hl-bar-drag'));
     }
 
-    /* Update stats */
+    /* Update stats – build DOM safely (no innerHTML) */
     const statsEl = bar.querySelector('#erp-hl-bar-stats');
-    statsEl.innerHTML = `
-      <span class="erp-pill erp-pill-apply"  title="Can Apply">⚡ ${stats.canApply} Can Apply</span>
-      <span class="erp-pill erp-pill-applied" title="Applied">✓ ${stats.applied} Applied</span>
-      ${stats.urgent > 0 ? `<span class="erp-pill erp-pill-urgent" title="Urgent (closing soon)">🔥 ${stats.urgent} Urgent</span>` : ''}
-      <span class="erp-pill erp-pill-closed"  title="Closed / Expired">⏳ ${stats.closed} Closed</span>
-      <span class="erp-pill erp-pill-total"   title="Total rows">∑ ${stats.total}</span>`;
+    while (statsEl.firstChild) statsEl.removeChild(statsEl.firstChild);
+    const statsPills = [
+      { cls: 'erp-pill-apply',  title: 'Can Apply',           icon: '⚡', label: `${stats.canApply} Can Apply` },
+      { cls: 'erp-pill-applied',title: 'Applied',             icon: '✓',  label: `${stats.applied} Applied` },
+      ...(stats.urgent > 0 ? [{ cls: 'erp-pill-urgent', title: 'Urgent (closing soon)', icon: '🔥', label: `${stats.urgent} Urgent` }] : []),
+      { cls: 'erp-pill-closed', title: 'Closed / Expired',   icon: '⏳', label: `${stats.closed} Closed` },
+      { cls: 'erp-pill-total',  title: 'Total rows',          icon: '∑',  label: String(stats.total) },
+    ];
+    statsPills.forEach(p => {
+      const span = document.createElement('span');
+      span.className = 'erp-pill ' + p.cls;
+      span.title = p.title;
+      span.textContent = p.icon + ' ' + p.label;
+      statsEl.appendChild(span);
+    });
 
     /* Update filter buttons */
     const filtersEl = bar.querySelector('#erp-hl-bar-filters');
@@ -229,14 +238,18 @@
       { key: 'urgent',      label: `Urgent (${stats.urgent})` },
       { key: 'hide-closed', label: 'Hide Closed' },
     ];
-    filtersEl.innerHTML = filters.map(f =>
-      `<button class="erp-filter-btn${activeFilter === f.key ? ' active' : ''}" data-f="${f.key}">${f.label}</button>`
-    ).join('');
-    filtersEl.querySelectorAll('.erp-filter-btn').forEach(btn => {
+    /* Update filter buttons – build DOM safely (no innerHTML) */
+    while (filtersEl.firstChild) filtersEl.removeChild(filtersEl.firstChild);
+    filters.forEach(f => {
+      const btn = document.createElement('button');
+      btn.className = 'erp-filter-btn' + (activeFilter === f.key ? ' active' : '');
+      btn.dataset.f = f.key;
+      btn.textContent = f.label;
       btn.addEventListener('click', () => {
-        activeFilter = btn.dataset.f;
+        activeFilter = f.key;
         highlightAll();
       });
+      filtersEl.appendChild(btn);
     });
   }
 
