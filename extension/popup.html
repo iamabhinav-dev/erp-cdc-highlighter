@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ERP Row Highlighter</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+    <header>
+      <div class="brand">
+        <div class="logo">⚡</div>
+        <div>
+          <h1>ERP Highlighter</h1>
+          <p>IIT KGP CDC Portal</p>
+        </div>
+      </div>
+      <span class="badge">Active</span>
+    </header>
+
+    <section>
+      <h2>Row Colours</h2>
+
+      <label class="row">
+        <div class="info">
+          <span class="lbl" style="color:#bbf7d0;">■ Applied rows</span>
+          <span class="desc">Application Status = Y</span>
+        </div>
+        <div class="right">
+          <input type="color" id="colorApplied" value="#bbf7d0">
+          <label class="sw"><input type="checkbox" id="toggleApplied" checked><span class="sl"></span></label>
+        </div>
+      </label>
+
+      <label class="row">
+        <div class="info">
+          <span class="lbl" style="color:#bfdbfe;">■ Can Apply rows</span>
+          <span class="desc">Open deadline, not yet applied</span>
+        </div>
+        <div class="right">
+          <input type="color" id="colorCanApply" value="#bfdbfe">
+          <label class="sw"><input type="checkbox" id="toggleCanApply" checked><span class="sl"></span></label>
+        </div>
+      </label>
+
+      <label class="row">
+        <div class="info">
+          <span class="lbl" style="color:#fecdd3;">■ Urgent rows</span>
+          <span class="desc">Closes within threshold</span>
+        </div>
+        <div class="right">
+          <input type="color" id="colorUrgent" value="#fecdd3">
+          <label class="sw"><input type="checkbox" id="toggleUrgent" checked><span class="sl"></span></label>
+        </div>
+      </label>
+
+      <label class="row">
+        <div class="info">
+          <span class="lbl">⏳ Dim Closed rows</span>
+          <span class="desc">Fades rows past deadline</span>
+        </div>
+        <label class="sw">
+          <input type="checkbox" id="toggleExpired" checked>
+          <span class="sl"></span>
+        </label>
+      </label>
+    </section>
+
+    <section>
+      <h2>Settings</h2>
+
+      <label class="row">
+        <div class="info">
+          <span class="lbl">📊 Show floating bar</span>
+          <span class="desc">Draggable stats bar on page</span>
+        </div>
+        <label class="sw">
+          <input type="checkbox" id="toggleToolbar" checked>
+          <span class="sl"></span>
+        </label>
+      </label>
+
+      <label class="row">
+        <div class="info">
+          <span class="lbl">🔥 Urgent threshold (hours)</span>
+          <span class="desc">Mark as urgent if closing within N hours</span>
+        </div>
+        <input type="number" id="urgentHours" value="12" min="1" max="72" style="
+          width: 52px; background: #1e293b; border: 1px solid #334155;
+          color: #f8fafc; border-radius: 6px; padding: 4px 6px; font-size: 12px;">
+      </label>
+    </section>
+
+    <footer>
+      <button id="btnReset" class="btn sec">Reset</button>
+      <button id="btnReload" class="btn pri">Apply & Reload</button>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

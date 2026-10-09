@@ -1,0 +1,189 @@
+/* ==========================================================
+   ERP Table Row Highlighter – Content Styles
+   Firefox & Brave | IIT KGP CDC Placement Portal
+   ========================================================== */
+
+/* CSS variables – overridable from popup */
+:root {
+  --erp-applied:   #bbf7d0;   /* soft green  */
+  --erp-can-apply: #bfdbfe;   /* soft blue   */
+  --erp-urgent:    #fecdd3;   /* soft red    */
+}
+
+/* ── Row Colours ── */
+
+/* Applied */
+tr.erp-applied,
+.ui-jqgrid tr.jqgrow.erp-applied,
+tr.erp-applied > td,
+.ui-jqgrid tr.jqgrow.erp-applied td {
+  background-color: var(--erp-applied) !important;
+}
+tr.erp-applied:hover > td,
+.ui-jqgrid tr.jqgrow.erp-applied:hover td {
+  filter: brightness(0.93) !important;
+}
+
+/* Can Apply */
+tr.erp-can-apply,
+.ui-jqgrid tr.jqgrow.erp-can-apply,
+tr.erp-can-apply > td,
+.ui-jqgrid tr.jqgrow.erp-can-apply td {
+  background-color: var(--erp-can-apply) !important;
+}
+tr.erp-can-apply:hover > td,
+.ui-jqgrid tr.jqgrow.erp-can-apply:hover td {
+  filter: brightness(0.93) !important;
+}
+
+/* Urgent */
+tr.erp-urgent,
+.ui-jqgrid tr.jqgrow.erp-urgent,
+tr.erp-urgent > td,
+.ui-jqgrid tr.jqgrow.erp-urgent td {
+  background-color: var(--erp-urgent) !important;
+  animation: erp-pulse 2.5s ease-in-out infinite;
+}
+@keyframes erp-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.75; }
+}
+
+/* Expired / Closed */
+tr.erp-expired,
+.ui-jqgrid tr.jqgrow.erp-expired,
+tr.erp-expired > td,
+.ui-jqgrid tr.jqgrow.erp-expired td {
+  opacity: 0.4 !important;
+  color: #6b7280 !important;
+}
+tr.erp-expired:hover > td,
+.ui-jqgrid tr.jqgrow.erp-expired:hover td {
+  opacity: 0.85 !important;
+}
+
+/* Hidden by filter */
+tr.erp-hidden {
+  display: none !important;
+}
+
+/* ── Floating Draggable Bar ── */
+
+#erp-hl-bar {
+  position: fixed;
+  top: 18px;
+  right: 20px;
+  z-index: 2147483647;
+  min-width: 300px;
+  max-width: 96vw;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+  color: #f8fafc;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* Drag handle / title row */
+#erp-hl-bar-drag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #1e293b;
+  cursor: grab;
+  border-bottom: 1px solid #334155;
+}
+#erp-hl-bar-drag:active { cursor: grabbing; }
+
+#erp-hl-bar-logo {
+  font-size: 14px;
+}
+
+#erp-hl-bar-title {
+  font-weight: 700;
+  font-size: 12px;
+  flex: 1;
+  color: #f1f5f9;
+  letter-spacing: 0.2px;
+}
+
+#erp-hl-bar-drag button {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 2px 5px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
+}
+#erp-hl-bar-drag button:hover {
+  background: #334155;
+  color: #f1f5f9;
+}
+
+/* Bar body */
+#erp-hl-bar-body {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Stats pills */
+#erp-hl-bar-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.erp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.erp-pill-apply   { background: #1d4ed8; color: #fff; }
+.erp-pill-applied { background: #047857; color: #fff; }
+.erp-pill-urgent  { background: #be123c; color: #fff; }
+.erp-pill-closed  { background: #475569; color: #fff; }
+.erp-pill-total   { background: #334155; color: #cbd5e1; }
+
+/* Filter buttons */
+#erp-hl-bar-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.erp-filter-btn {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background: #1e293b;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.erp-filter-btn:hover {
+  background: #334155;
+  color: #f1f5f9;
+}
+.erp-filter-btn.active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}

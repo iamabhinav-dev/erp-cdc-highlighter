@@ -1,0 +1,18 @@
+# Ignore OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor folders
+.vscode/
+.idea/
+
+# Any personal saved HTML snapshots or screenshots — do NOT commit
+*.jsp
+*_erp.html
+*_website.txt
+Screenshot*
+link.txt
+
+# Node / npm (if anyone adds build tools later)
+node_modules/

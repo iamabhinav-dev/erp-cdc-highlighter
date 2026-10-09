@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IIT Kharagpur ERP - CDC Application (Extension Test Page)</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f1f5f9;
+    }
+    .erp-header {
+      background: #1e3a8a;
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .erp-header h1 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .user-info {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    .breadcrumb {
+      padding: 10px 24px;
+      background: #e2e8f0;
+      font-size: 12px;
+      color: #475569;
+    }
+    .breadcrumb a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+    .container {
+      padding: 20px 24px;
+    }
+    .instructions-card {
+      background: #ffffff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .instructions-card h2 {
+      margin-top: 0;
+      font-size: 15px;
+      color: #1e293b;
+    }
+    .instructions-card p {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .frame-container {
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    iframe#myframe {
+      width: 100%;
+      height: 650px;
+      border: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="erp-header">
+    <h1>Welcome to ERP, IIT Kharagpur (Simulation Mode)</h1>
+    <div class="user-info">Logged in: Student CDC Portal</div>
+  </div>
+
+  <div class="breadcrumb">
+    You are in: <a href="#">CDC</a> &gt; Student &gt; <a href="#">Application of Placement/Internship</a>
+  </div>
+
+  <div class="container">
+    <div class="instructions-card">
+      <h2>🚀 Extension Test Environment</h2>
+      <p>
+        This test page simulates the exact nested <code>&lt;iframe id="myframe"&gt;</code> architecture used by IIT Kharagpur ERP.
+      </p>
+      <p>
+        Once you load the <strong>ERP Table Row Highlighter</strong> extension in Firefox or Brave, you will see:
+      </p>
+      <ul style="font-size: 13px; color: #475569; padding-left: 20px; margin-bottom: 0;">
+        <li><strong>⚡ Can Apply rows</strong> highlighted in soft blue/amber with <em>⚡ Can Apply</em> or <em>⏳ Countdown</em> badges.</li>
+        <li><strong>✓ Applied rows</strong> (Accenture, DB, Squarepoint, Warner Music) highlighted in soft green with <em>✓ Applied</em> badges.</li>
+        <li><strong>🔥 Urgent alert</strong> on jobs closing soon (e.g. Edelweiss closing tonight).</li>
+        <li><strong>⏳ Closed rows</strong> (Squarepoint, Trexquant) dimmed with expired badges.</li>
+        <li><strong>Floating Quick Bar</strong> on the top right for instant filtering and statistics.</li>
+      </ul>
+    </div>
+
+    <div class="frame-container">
+      <iframe id="myframe" name="myframe" src="mock_table.html"></iframe>
+    </div>
+  </div>
+
+</body>
+</html>
