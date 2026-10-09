@@ -68,41 +68,82 @@
     return td.textContent.trim();
   }
 
+  /* ── Check if a specific table is strictly the CDC Placement grid ── */
+  function isPlacementTable(table) {
+    if (!table || table.nodeType !== 1) return false;
+
+    // 1. In jqGrid (real ERP): Table must have the companyname column
+    const hasJqCompany = !!table.querySelector('td[aria-describedby*="_companyname"], th[id*="_companyname"]');
+    const hasJqDeadline = !!table.querySelector('td[aria-describedby$="_resumedeadline"]:not([aria-describedby*="_resumedeadline_st"]), th[id$="_resumedeadline"]:not([id*="_resumedeadline_st"])');
+    const hasJqApply = !!table.querySelector('td[aria-describedby*="_apply"], th[id*="_apply"]');
+
+    if (hasJqCompany && (hasJqDeadline || hasJqApply)) {
+      return true;
+    }
+
+    // Check parent grid wrapper for companyname
+    const gridId = table.id;
+    if (gridId) {
+      const gbox = document.getElementById('gbox_' + gridId) || table.closest('.ui-jqgrid');
+      if (gbox) {
+        const gboxCompany = !!gbox.querySelector(`th[id*="${gridId}_companyname"]`);
+        const gboxDeadline = !!gbox.querySelector(`th[id$="${gridId}_resumedeadline"]:not([id*="_resumedeadline_st"])`);
+        if (gboxCompany && gboxDeadline) {
+          return true;
+        }
+      }
+    }
+
+    // 2. Plain / Mock tables: Must have explicit "Company" and ("Resume Upload End" or "Application Status") headers
+    const ths = Array.from(table.querySelectorAll('thead th, tr:first-child th')).map(th => th.textContent.trim().toLowerCase());
+    const hasCompanyTh = ths.some(t => t === 'company' || t === 'company name');
+    const hasPlacementTh = ths.some(t => t.includes('resume upload end') || t.includes('application status') || t.includes('apply/acceptance'));
+
+    if (hasCompanyTh && hasPlacementTh) {
+      return true;
+    }
+
+    // 3. Local mock table support
+    const href = window.location.href || '';
+    if (href.includes('mock_table') || href.includes('mock_erp_test')) {
+      if (table.id === 'grid37' || table.classList.contains('erp-table') || hasCompanyTh) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /* ── Locate the single CDC Placement Table on page ── */
+  function findCDCTable() {
+    const tables = document.querySelectorAll('table.ui-jqgrid-btable, table[id^="grid"], table.erp-table, table');
+    for (const t of tables) {
+      if (isPlacementTable(t)) {
+        return t;
+      }
+    }
+    return null;
+  }
+
   /* ── Check if current page/frame is the CDC Noticeboard / Placement portal ── */
   function isCDCNoticeboard() {
     const href = window.location.href || '';
-    const title = (document.title || '').toUpperCase();
 
-    // 1. Direct CDC placement URL paths
-    if (/TrainingPlacementSSO\//i.test(href) ||
-        /TrainingPlacement\//i.test(href) ||
-        /TPStudent\.jsp/i.test(href) ||
-        /Notice\.jsp/i.test(href) ||
-        /StudentPlacementStatus\.jsp/i.test(href)) {
+    // 1. Direct CDC placement URL paths (Notice.jsp and TPStudent.jsp)
+    if (/TrainingPlacementSSO\/(Notice|TPStudent)\.jsp/i.test(href) ||
+        /TrainingPlacementSSO/i.test(href) ||
+        /mock_erp_test|mock_table|firefox_frame/i.test(href)) {
       return true;
     }
 
-    // 2. Local test / mock files
-    if (/mock_erp_test|mock_table|firefox_frame/i.test(href)) {
+    // 2. The placement table itself is present in the DOM
+    if (findCDCTable()) {
       return true;
     }
 
-    // 3. Page title check
-    if (title.includes('CAREER DEVELOPMENT CENTRE')) {
-      return true;
-    }
-
-    // 4. In-page markers: jqGrid placement monitoring table
-    if (document.querySelector('table[id*="monitoring"], table[id*="jqmonitoring"], #jqmonitoring37')) {
-      return true;
-    }
-
-    // 5. Look for specific CDC placement headers / breadcrumb text
+    // 3. Explicit CDC placement grid banner text
     const bodyText = document.body ? (document.body.innerText || document.body.textContent || '') : '';
-    if (
-      (bodyText.includes('Placement/Internship') || bodyText.includes('Registration/Update Profile for Placement')) &&
-      (bodyText.includes('Application Status') || bodyText.includes('Resume Upload End') || bodyText.includes('Preview CV'))
-    ) {
+    if (bodyText.includes('Placement/Internship form will come in this grid')) {
       return true;
     }
 
@@ -113,51 +154,53 @@
   function highlightAll() {
     if (!isCDCNoticeboard()) return;
 
-    const now = new Date();
-    const urgentMs = (config.urgentHours || 12) * 3600000;
-
-    const stats = { total: 0, canApply: 0, applied: 0, urgent: 0, closed: 0 };
-
-    /* Collect candidate row sets from jqGrid or plain tables */
-    let rows = [];
-
-    /* 1. jqGrid rows: tr.jqgrow */
-    const jqRows = document.querySelectorAll('tr.jqgrow');
-    if (jqRows.length > 0) {
-      rows = Array.from(jqRows);
-    } else {
-      /* 2. Fallback: plain <table> rows (our mock) */
-      document.querySelectorAll('table tbody tr').forEach(tr => {
-        const tds = tr.querySelectorAll('td');
-        if (tds.length >= 5) rows.push(tr);
-      });
+    const cdcTable = findCDCTable();
+    if (!cdcTable) {
+      const bar = document.getElementById('erp-hl-bar');
+      if (bar) bar.remove();
+      return;
     }
 
-    rows.forEach(row => {
-      /* --- Resolve cells --- */
-      /* Try jqGrid aria-describedby first */
-      let applyCell  = row.querySelector('td[aria-describedby$="_apply"]');
-      let endCell    = row.querySelector('td[aria-describedby$="_resumedeadline"]');
-      let nameCell   = row.querySelector('td[aria-describedby$="_companyname"]');
+    const now = new Date();
+    const urgentMs = (config.urgentHours || 12) * 3600000;
+    const stats = { total: 0, canApply: 0, applied: 0, urgent: 0, closed: 0 };
 
-      /* Fallback for plain tables: scan positionally */
-      if (!applyCell && !endCell) {
+    // Resolve column indices for plain/mock tables if not using jqGrid aria-describedby
+    const ths = Array.from(cdcTable.querySelectorAll('thead th, tr:first-child th')).map(th => th.textContent.trim().toLowerCase());
+    const companyColIdx = ths.findIndex(t => t === 'company' || t === 'company name');
+    const applyColIdx = ths.findIndex(t => t.includes('application status') || t.includes('apply'));
+    const deadlineColIdx = ths.findIndex(t => t.includes('resume upload end') || t.includes('deadline'));
+
+    /* STRICT: ONLY collect rows from the identified CDC placement table */
+    const jqRows = cdcTable.querySelectorAll('tr.jqgrow');
+    let rows = jqRows.length > 0 ? Array.from(jqRows) : Array.from(cdcTable.querySelectorAll('tbody tr'));
+
+    rows.forEach(row => {
+      /* Skip header or filter rows */
+      if (row.classList.contains('ui-jqgrid-labels') || row.querySelector('th')) return;
+
+      /* --- Resolve cells --- */
+      let nameCell  = row.querySelector('td[aria-describedby*="_companyname"]');
+      let applyCell = row.querySelector('td[aria-describedby*="_apply"]');
+      // Strictly match the END deadline column, NEVER the start date column (resumedeadline_st)
+      let endCell   = row.querySelector('td[aria-describedby$="_resumedeadline"]:not([aria-describedby*="_resumedeadline_st"])') ||
+                      row.querySelector('td[aria-describedby="grid37_resumedeadline"]');
+
+      /* Fallback for plain tables using exact header column index */
+      if (!nameCell && companyColIdx !== -1) {
         const tds = row.querySelectorAll('td');
-        tds.forEach(td => {
-          const t = td.textContent.trim().toUpperCase();
-          if (t === 'Y' && !applyCell) applyCell = td;
-        });
-        /* Find deadline by date pattern (last date-looking cell) */
-        let lastDate = null, lastDateCell = null;
-        tds.forEach(td => {
-          const d = parseDate(td.textContent);
-          if (d) { lastDate = d; lastDateCell = td; }
-        });
-        endCell = lastDateCell;
+        if (tds[companyColIdx]) nameCell = tds[companyColIdx];
+        if (applyColIdx !== -1 && tds[applyColIdx]) applyCell = tds[applyColIdx];
+        if (deadlineColIdx !== -1 && tds[deadlineColIdx]) endCell = tds[deadlineColIdx];
       }
 
-      /* Guard: Skip any row that is not an actual CDC company row */
-      if (!applyCell && !endCell && !nameCell) {
+      /* MANDATORY REQUIREMENT: Row MUST have a valid, non-empty company name cell! */
+      if (!nameCell || !cellText(nameCell)) {
+        return; // Skip any row that is not an actual company row!
+      }
+
+      /* Must also have at least an apply cell or deadline cell */
+      if (!applyCell && !endCell) {
         return;
       }
 
@@ -333,12 +376,15 @@
 
   /* ── MutationObserver to detect jqGrid async row injection ── */
   function setupObserver() {
+    if (!isCDCNoticeboard()) return;
     if (observer) observer.disconnect();
     observer = new MutationObserver((mutations) => {
       for (const m of mutations) {
         if (m.target && m.target.id === 'erp-hl-bar') continue;
         if (m.target && m.target.closest && m.target.closest('#erp-hl-bar')) continue;
-        if (m.addedNodes.length > 0) { scan(); break; }
+        if (m.addedNodes.length > 0) {
+          if (findCDCTable()) { scan(); break; }
+        }
       }
     });
     observer.observe(document.body, { childList: true, subtree: true });
@@ -350,8 +396,10 @@
     let tries = 0;
     const iv = setInterval(() => {
       tries++;
-      if (document.querySelectorAll('tr.jqgrow, #jqmonitoring37 tr, table[id*="monitoring"] tr').length > 0) {
+      const cdcTable = findCDCTable();
+      if (cdcTable && cdcTable.querySelectorAll('tr.jqgrow, tbody tr').length > 0) {
         highlightAll();
+        clearInterval(iv);
       }
       if (tries >= 30) clearInterval(iv);
     }, 400);

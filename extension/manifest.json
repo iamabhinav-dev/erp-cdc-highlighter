@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ERP Table Row Highlighter",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "Smart row highlighter for IIT Kharagpur ERP CDC Placement portal. Works seamlessly on Firefox and Brave.",
   "icons": {
     "16": "icons/icon16.png",
