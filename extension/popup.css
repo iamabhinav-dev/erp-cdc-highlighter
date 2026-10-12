@@ -59,7 +59,7 @@ input[type="color"]::-webkit-color-swatch {
 }
 
 /* Toggle switch */
-.sw { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+.sw { position: relative; display: inline-block; width: 36px; height: 20px; flex-shrink: 0; }
 .sw input { opacity: 0; width: 0; height: 0; }
 .sl {
   position: absolute; inset: 0; border-radius: 20px;

@@ -22,48 +22,48 @@
     <section>
       <h2>Row Colours</h2>
 
-      <label class="row">
+      <div class="row">
         <div class="info">
-          <span class="lbl" style="color:#bbf7d0;">■ Applied rows</span>
+          <span class="lbl" id="lblApplied" style="color:#bbf7d0;">■ Applied rows</span>
           <span class="desc">Application Status = Y</span>
         </div>
         <div class="right">
           <input type="color" id="colorApplied" value="#bbf7d0">
           <label class="sw"><input type="checkbox" id="toggleApplied" checked><span class="sl"></span></label>
         </div>
-      </label>
+      </div>
 
-      <label class="row">
+      <div class="row">
         <div class="info">
-          <span class="lbl" style="color:#bfdbfe;">■ Can Apply rows</span>
+          <span class="lbl" id="lblCanApply" style="color:#bfdbfe;">■ Can Apply rows</span>
           <span class="desc">Open deadline, not yet applied</span>
         </div>
         <div class="right">
           <input type="color" id="colorCanApply" value="#bfdbfe">
           <label class="sw"><input type="checkbox" id="toggleCanApply" checked><span class="sl"></span></label>
         </div>
-      </label>
+      </div>
 
-      <label class="row">
+      <div class="row">
         <div class="info">
-          <span class="lbl" style="color:#fecdd3;">■ Urgent rows</span>
+          <span class="lbl" id="lblUrgent" style="color:#fecdd3;">■ Urgent rows</span>
           <span class="desc">Closes within threshold</span>
         </div>
         <div class="right">
           <input type="color" id="colorUrgent" value="#fecdd3">
           <label class="sw"><input type="checkbox" id="toggleUrgent" checked><span class="sl"></span></label>
         </div>
-      </label>
+      </div>
 
       <label class="row">
         <div class="info">
           <span class="lbl">⏳ Dim Closed rows</span>
           <span class="desc">Fades rows past deadline</span>
         </div>
-        <label class="sw">
+        <span class="sw">
           <input type="checkbox" id="toggleExpired" checked>
           <span class="sl"></span>
-        </label>
+        </span>
       </label>
     </section>
 
@@ -75,10 +75,10 @@
           <span class="lbl">📊 Show floating bar</span>
           <span class="desc">Draggable stats bar on page</span>
         </div>
-        <label class="sw">
+        <span class="sw">
           <input type="checkbox" id="toggleToolbar" checked>
           <span class="sl"></span>
-        </label>
+        </span>
       </label>
 
       <label class="row">

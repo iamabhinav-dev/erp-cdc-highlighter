@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     highlightUrgent: true,
     dimExpired: true,
     showToolbar: true,
-    hoverHighlight: true,
     urgentHours: 12,
     customColors: {
       appliedBg:  '#bbf7d0',
@@ -21,10 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
     'toggleCanApply', 'toggleApplied', 'toggleUrgent',
     'toggleExpired', 'toggleToolbar', 'colorApplied',
     'colorCanApply', 'colorUrgent', 'urgentHours',
+    'lblApplied', 'lblCanApply', 'lblUrgent',
     'btnReset', 'btnReload'
   ];
   const el = {};
   ids.forEach(id => { el[id] = document.getElementById(id); });
+
+  /* Keep the ■ swatch in each label in sync with its colour picker */
+  function syncLabelColors() {
+    el.lblApplied.style.color  = el.colorApplied.value;
+    el.lblCanApply.style.color = el.colorCanApply.value;
+    el.lblUrgent.style.color   = el.colorUrgent.value;
+  }
 
   function applyToUI(c) {
     el.toggleCanApply.checked = c.highlightCanApply;
@@ -37,12 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
       el.colorCanApply.value = c.customColors.canApplyBg || '#bfdbfe';
       el.colorUrgent.value   = c.customColors.urgentBg   || '#fecdd3';
     }
+    syncLabelColors();
     if (el.urgentHours) el.urgentHours.value = c.urgentHours || 12;
   }
 
   chrome.storage.local.get(DEFAULTS, applyToUI);
 
   function save() {
+    syncLabelColors();
     chrome.storage.local.set({
       highlightCanApply: el.toggleCanApply.checked,
       highlightApplied:  el.toggleApplied.checked,

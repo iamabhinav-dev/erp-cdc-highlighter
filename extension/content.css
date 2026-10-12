@@ -49,9 +49,8 @@ tr.erp-urgent > td,
   50%       { opacity: 0.75; }
 }
 
-/* Expired / Closed */
-tr.erp-expired,
-.ui-jqgrid tr.jqgrow.erp-expired,
+/* Expired / Closed – opacity on cells only; also setting it on the <tr> would
+   compound (0.4 × 0.4) and stop the hover rule below from restoring visibility */
 tr.erp-expired > td,
 .ui-jqgrid tr.jqgrow.erp-expired td {
   opacity: 0.4 !important;

@@ -15,16 +15,17 @@
     highlightApplied: true,
     highlightUrgent: true,
     dimExpired: true,
-    hoverHighlight: true,
     showToolbar: true,
     urgentHours: 12,
     customColors: {
       appliedBg: '#bbf7d0',
       canApplyBg: '#bfdbfe',
-      urgentBg: '#fecdd3',
-      pinnedBg: '#fef08a'
+      urgentBg: '#fecdd3'
     }
   };
+
+  /* Re-evaluate deadlines periodically so rows move to urgent/closed as time passes */
+  const RESCAN_INTERVAL_MS = 60000;
 
   let config = { ...DEFAULT_CONFIG };
   let activeFilter = 'all';
@@ -49,16 +50,21 @@
     }
   }
 
+  /* ── Build a Date from ERP wall-clock time, which is always IST (UTC+5:30) ── */
+  function istDate(y, mo, d, h, mi) {
+    return new Date(Date.UTC(y, mo - 1, d, h, mi) - 330 * 60000);
+  }
+
   /* ── Date parser: YYYY-MM-DD HH:MM or DD-MM-YYYY HH:MM ── */
   function parseDate(str) {
     if (!str) return null;
     const s = str.trim();
     // YYYY-MM-DD HH:MM
     let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:\s+(\d{1,2}):(\d{2}))?/);
-    if (m) return new Date(+m[1], +m[2]-1, +m[3], +(m[4]||0), +(m[5]||0));
+    if (m) return istDate(+m[1], +m[2], +m[3], +(m[4]||0), +(m[5]||0));
     // DD-MM-YYYY HH:MM
     m = s.match(/^(\d{1,2})-(\d{1,2})-(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);
-    if (m) return new Date(+m[3], +m[2]-1, +m[1], +(m[4]||0), +(m[5]||0));
+    if (m) return istDate(+m[3], +m[2], +m[1], +(m[4]||0), +(m[5]||0));
     return null;
   }
 
@@ -114,15 +120,18 @@
     return false;
   }
 
-  /* ── Locate the single CDC Placement Table on page ── */
+  /* ── Locate the single CDC Placement Table on page ──
+     jqGrid renders headers in a separate table (.ui-jqgrid-htable) placed before
+     the data table, so prefer a matching table that actually contains rows. */
   function findCDCTable() {
     const tables = document.querySelectorAll('table.ui-jqgrid-btable, table[id^="grid"], table.erp-table, table');
+    let firstMatch = null;
     for (const t of tables) {
-      if (isPlacementTable(t)) {
-        return t;
-      }
+      if (!isPlacementTable(t)) continue;
+      if (t.querySelector('tr.jqgrow, tbody tr td')) return t;
+      if (!firstMatch) firstMatch = t;
     }
-    return null;
+    return firstMatch;
   }
 
   /* ── Check if current page/frame is the CDC Noticeboard / Placement portal ── */
@@ -168,7 +177,9 @@
     // Resolve column indices for plain/mock tables if not using jqGrid aria-describedby
     const ths = Array.from(cdcTable.querySelectorAll('thead th, tr:first-child th')).map(th => th.textContent.trim().toLowerCase());
     const companyColIdx = ths.findIndex(t => t === 'company' || t === 'company name');
-    const applyColIdx = ths.findIndex(t => t.includes('application status') || t.includes('apply'));
+    // Prefer "Application Status" — a looser 'apply' match would hit the earlier "Apply/Acceptance" column
+    let applyColIdx = ths.findIndex(t => t.includes('application status'));
+    if (applyColIdx === -1) applyColIdx = ths.findIndex(t => t.includes('apply'));
     const deadlineColIdx = ths.findIndex(t => t.includes('resume upload end') || t.includes('deadline'));
 
     /* STRICT: ONLY collect rows from the identified CDC placement table */
@@ -248,6 +259,9 @@
 
     if (config.showToolbar && stats.total > 0) {
       renderBar(stats);
+    } else {
+      const bar = document.getElementById('erp-hl-bar');
+      if (bar) bar.remove();
     }
 
     return stats;
@@ -430,6 +444,7 @@
       highlightAll();
       setupObserver();
       pollUntilRows();
+      setInterval(highlightAll, RESCAN_INTERVAL_MS);
     });
   }
 
