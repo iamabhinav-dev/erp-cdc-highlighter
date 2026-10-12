@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<!--
+  Test fixture: the CDC frame (TrainingPlacementSSO/TPStudent.jsp) as served by IIT KGP ERP,
+  with personal details removed and unrelated helper scripts dropped. The page layout,
+  wrapper tables and the jqGrid setup (colModel, group headers) are kept as-is, because
+  the extension's table detection depends on them. Row data comes from ERPMonitoring.htm,
+  which the test serves with generated rows.
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>CAREER DEVELOPMENT CENTRE (IIT-KGP)</title>
+        <script src="JQGridCommon/js/jquery-1.9.1.js"  type="text/javascript"></script>
+    </head>
+    <body>
+        <div><a style="color:blue; font-weight: bold;" href="Notice.jsp">Notice</a></div>
+        <br>
+        <table style="padding-bottom: 150px;">
+            <tr>
+                <th align="center" style="background-color: lightgrey;font-size: small;"> 
+                    &nbsp;&nbsp;&nbsp;&nbsp;<a href="JavaScript:void(0);" onclick="resume('00XX00000','SU','PLACEMENT');">Registration/Update Profile for Placement/Internship</a> 
+                    &nbsp;You are registered.&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;<a href="JavaScript:void(0);" onclick="StudentPlacementStatus('2026-2027','00XX00000');">Placement/Internship Status</a>                   
+                    <a style="color:blue; font-variant: bold;" onclick="vw1resume1('00XX00000')" href="javascript:(void 0);"><b>Preview CV1</b></a>&nbsp;&nbsp;
+                    <a style="color:blue; font-variant: bold;" onclick="vw1resume2('00XX00000')" href="javascript:(void 0);"><b>Preview CV2</b></a>&nbsp;&nbsp;
+                    <a style="color:blue; font-variant: bold;" onclick="vw1resume3('00XX00000')" href="javascript:(void 0);"><b>Preview CV3</b></a>&nbsp;&nbsp;
+                    &nbsp;&nbsp;<a style="color:blue; font-variant: bold;" href="javascript:void(0);" onclick="window.location.reload()">Refresh</a>
+                    &nbsp;&nbsp;&nbsp;<a style="color:blue; font-variant: bold;" href="javascript:void(0);" onclick="ranking();">Preference</a>
+                </th>
+            </tr>
+            <tr>
+                <td style="color: green;font-weight: bold;"></td>
+            </tr>
+            <tr>
+                <td>    
+                    <script src="JQGridCommon/js/jquery-1.9.0.min.js"  type="text/javascript"></script>
+                    <script src="JQGridCommon/js/i18n/grid.locale-en.js"  type="text/javascript"></script>
+                    <script src="JQGridCommon/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+                    <script src="JQGridCommon/js/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+                    <link href="JQGridCommon/css/jquery-ui-1.10.3.custom.css" rel="stylesheet" type="text/css" />    
+                    <link href="JQGridCommon/css/jquery.ui.all.css" rel="stylesheet" type="text/css" />
+                    <link href="JQGridCommon/css/ui.jqgrid.css" rel="stylesheet" type="text/css" />
+                    <style type="text/css">
+                    .ui-jqgrid tr.jqgrow td {
+                        white-space:nowrap;
+                    }
+                    </style>
+
+                    <table id="jqmonitoring37">
+                        <tr>
+                            <td>
+                                <table style="border-style: groove; border-color: lightgrey;border-width: 1px;border-radius: 5px;">
+                                    <tr>
+                                        <td>
+                                            <table id="sQmTable37" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <input type="hidden" id="id" name="id" value="37">
+                                                    <input type="hidden" id="subgrid" name="subgrid" value="">
+                                                    <input type="hidden" id="sublink" name="sublink" value="Y">
+                                                    <input type="hidden" id="excel" name="excel" value="">
+                                                    <input type="hidden" id="sendmail" name="sendmail" value="">
+                                                    <input type="hidden" id="where" name="where" value="">
+                                                    <input type="hidden" id="hidden" name="hidden" value="description">
+                                                    <script type="text/javascript">          
+                                                    function getParamValue(row_id, param)
+                                                    {
+                                                        var rowData = jq("#grid37").getRowData(row_id);
+                                                        return rowData[param];
+                                                    }
+                                                    var jq = jQuery;
+                                                    jq(function()
+                                                    {
+                                                        jq("#grid37").jqGrid({
+                                                            url:'ERPMonitoring.htm?action=fetchData&jqqueryid=37',
+                                                            datatype: 'xml',
+                                                            mtype: 'GET',
+                                                            colNames:[
+                                                                'Company', 
+                                                                'Additional Details', 
+                                                                'PPT', 
+                                                                'Apply/Acceptance', 
+                                                                'Apply/Acceptance', 
+                                                                'CTC', 
+                                                                'Currency', 
+                                                                'Additional Details', 
+                                                                'Application Status', 
+                                                                'Resume Upload Start', 
+                                                                'Resume Upload End', 
+                                                                'Interview/Selection', 
+                                                                'Contract', 
+                                                                ''                            
+                                                            ],
+                                                            colModel:[
+                                                                { name:'companyname', index:'companyname', searchtype:"string", sorttype:"string", width:30 },
+                                                                { name:'view2', index:'view2', searchtype:"string", sorttype:"string", width:30 },
+                                                                { name:'view3', index:'view3', searchtype:"string", sorttype:"string", width:30 },
+                                                                { name:'designation', index:'designation', searchtype:"string", sorttype:"string", width:40 },
+                                                                { name:'description', index:'description', searchtype:"string", sorttype:"string", width:40, hidden:true },
+                                                                { name:'ctc', index:'ctc', searchtype:"string", sorttype:"string", width:30 },
+                                                                { name:'Currency', index:'Currency', searchtype:"string", sorttype:"string", width:30 },
+                                                                { name:'view1', index:'view1', searchtype:"string", sorttype:"string", width:20 },
+                                                                { name:'apply', index:'apply', searchtype:"string", sorttype:"string", width:20 },
+                                                                { name:'resumedeadline_st', index:'resumedeadline_st', searchtype:"string", sorttype:"string", width:30 },
+                                                                { name:'resumedeadline', index:'resumedeadline', searchtype:"string", sorttype:"string", width:30 },
+                                                                { name:'interview_date_confirmed', index:'interview_date_confirmed', searchtype:"string", sorttype:"string", width:30 },
+                                                                { name:'contract', index:'contract', searchtype:"string", sorttype:"string", width:30 },
+                                                                { name:'view', index:'view', width:4, sortable:false }
+                                                            ],
+                                                            rowNum:20,                
+                                                            rowTotal: 50,
+                                                            rowList : [20,50,100],
+                                                            scroll:1,  
+                                                            height:350,
+                                                            width:1200,
+                                                            loadonce:true,
+                                                            rownumbers: true,
+                                                            rownumWidth: 40,
+                                                            gridview: true,
+                                                            pager: '#pager37',
+                                                            viewrecords: true,                
+                                                            gridComplete: function(){if(typeof parent.setFrameWH != 'undefined') parent.setFrameWH();},                    
+                                                            caption: "Registered company and Placement/Internship form will come in this grid when available (All dates in DD-MM-YYYY format and Time in HH:MM (24 Hours) format)"                
+                                                        }).navGrid('#pager37',{add:false,edit:false,del:false}, {}, {}, {}, {closeOnEscape: true, multipleSearch: true, multipleGroup: false, closeAfterSearch: true, showQuery: false }, {});
+                                                        
+                                                        jq("#grid37").jqGrid('setGroupHeaders', {
+                                                            useColSpanStyle: true, 
+                                                            groupHeaders:[
+                                                                {startColumnName: 'companyname', numberOfColumns: 3, titleText: 'Company'},   
+                                                                {startColumnName: 'designation', numberOfColumns: 9, titleText: 'Placement/Internship Form Details'}   
+                                                            ]
+                                                        });
+                                                    });
+                                                    </script>
+                                                    <div id="jqgrid37">
+                                                        <table id="grid37"></table>
+                                                        <div id="pager37"></div>
+                                                    </div>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr> 
+        </table>
+    </body>
+</html>

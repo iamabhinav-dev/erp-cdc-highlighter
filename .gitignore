@@ -16,3 +16,7 @@ link.txt
 
 # Node / npm (if anyone adds build tools later)
 node_modules/
+
+# Test artefacts
+tests/.cache/
+tests/screenshots/

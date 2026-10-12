@@ -1,0 +1,12 @@
+{
+  "name": "erp-row-highlighter-tests",
+  "private": true,
+  "description": "End-to-end browser tests for the ERP Table Row Highlighter extension",
+  "scripts": {
+    "test": "node e2e.test.js",
+    "test:quick": "node e2e.test.js --quick"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^23.11.1"
+  }
+}

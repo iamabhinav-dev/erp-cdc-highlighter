@@ -54,6 +54,19 @@ The extension only runs on `erp.iitkgp.ac.in`, so to try it on the mock pages:
 3. Open `mock_erp_test.html` — it simulates the ERP iframe structure with the same jqGrid markup.
 4. You should see coloured / faded rows and the draggable stats bar. The mock deadlines are fixed dates, so edit them in `mock_table.html` to see the *Can Apply* and *Urgent* states.
 
+### Automated browser tests
+
+`tests/` contains an end-to-end test that loads the unpacked extension into a real browser and checks it against the real CDC frame markup and jqGrid, served at the genuine ERP URLs (no login or network access to ERP needed):
+
+```bash
+cd tests
+npm install
+npm run test:quick   # ~20 s
+npm test             # full run (~3 min, also waits for a deadline to pass)
+```
+
+It covers row colours (including IST handling on a non-IST clock), filters, the floating bar (position, counts, drag, minimise, close), and the popup settings. It needs **Brave** or **Chromium** (set `BROWSER_PATH` if it isn't auto-detected — Google Chrome 137+ can't load unpacked extensions from the command line). Screenshots are written to `tests/screenshots/`.
+
 ---
 
 ## 📁 Repository Structure
@@ -71,8 +84,15 @@ extension/
     ├── icon48.png
     └── icon128.png
 
+tests/
+├── e2e.test.js         # Automated browser test (Puppeteer)
+├── package.json
+└── fixtures/
+    └── TPStudent.html  # CDC frame markup + jqGrid setup (personal data removed)
+
 mock_erp_test.html      # Local test page (parent frame)
 mock_table.html         # Local test page (inner iframe — jqGrid markup)
+LICENSE
 ```
 
 ---
