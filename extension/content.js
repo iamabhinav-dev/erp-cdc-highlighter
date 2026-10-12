@@ -68,7 +68,7 @@
     return null;
   }
 
-  /* ── Get text from a cell, stripping injected extension nodes ── */
+  /* ── Trimmed text of a cell ('' if missing) ── */
   function cellText(td) {
     if (!td) return '';
     return td.textContent.trim();
@@ -109,14 +109,6 @@
       return true;
     }
 
-    // 3. Local mock table support
-    const href = window.location.href || '';
-    if (href.includes('mock_table') || href.includes('mock_erp_test')) {
-      if (table.id === 'grid37' || table.classList.contains('erp-table') || hasCompanyTh) {
-        return true;
-      }
-    }
-
     return false;
   }
 
@@ -138,10 +130,8 @@
   function isCDCNoticeboard() {
     const href = window.location.href || '';
 
-    // 1. Direct CDC placement URL paths (Notice.jsp and TPStudent.jsp)
-    if (/TrainingPlacementSSO\/(Notice|TPStudent)\.jsp/i.test(href) ||
-        /TrainingPlacementSSO/i.test(href) ||
-        /mock_erp_test|mock_table|firefox_frame/i.test(href)) {
+    // 1. CDC placement URL paths (Notice.jsp, TPStudent.jsp, ...)
+    if (/TrainingPlacementSSO/i.test(href)) {
       return true;
     }
 
@@ -194,8 +184,7 @@
       let nameCell  = row.querySelector('td[aria-describedby*="_companyname"]');
       let applyCell = row.querySelector('td[aria-describedby*="_apply"]');
       // Strictly match the END deadline column, NEVER the start date column (resumedeadline_st)
-      let endCell   = row.querySelector('td[aria-describedby$="_resumedeadline"]:not([aria-describedby*="_resumedeadline_st"])') ||
-                      row.querySelector('td[aria-describedby="grid37_resumedeadline"]');
+      let endCell   = row.querySelector('td[aria-describedby$="_resumedeadline"]:not([aria-describedby*="_resumedeadline_st"])');
 
       /* Fallback for plain tables using exact header column index */
       if (!nameCell && companyColIdx !== -1) {
